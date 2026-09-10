@@ -5,15 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>HAPPY TOUR 2026</title>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&display=swap');
     @import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
     
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body { height: 100%; font-family: 'Arial', sans-serif; }
+    html, body { height: 100%; font-family: 'Noto Sans Bengali', 'Arial', sans-serif; }
 
     body {
-      background: linear-gradient(135deg, #FFB3E6 0%, #E0B8FF 50%, #B3D9FF 100%);
+      background: linear-gradient(135deg, #28CAEB 0%, #0037eb 50%, #B3D9FF 100%);
       overflow: hidden;
     }
 
@@ -26,29 +27,138 @@
       left: 0;
     }
 
-    .particle {
-      position: absolute;
-      pointer-events: none;
-      border-radius: 50%;
-      animation: float 8s infinite ease-in-out;
-      box-shadow: 0 0 10px rgba(255, 179, 230, 0.8);
+/* =========================================
+   FESTIVE PARTICLES
+   ========================================= */
+
+.particle {
+  position: absolute;
+  pointer-events: none;
+  width: 7px;
+  height: 7px;
+  animation: particleFloat 8s infinite ease-in-out;
+  will-change: transform, opacity;
+}
+
+/* GLOWING DOT */
+.particle.dot {
+  border-radius: 50%;
+}
+
+/* STAR */
+.particle.star {
+  width: 12px;
+  height: 12px;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.particle.star::before {
+  content: "✦";
+  position: absolute;
+  left: 0;
+  top: -3px;
+  font-size: 18px;
+  line-height: 1;
+}
+
+/* SPARKLE */
+.particle.sparkle {
+  width: 14px;
+  height: 14px;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.particle.sparkle::before {
+  content: "✧";
+  position: absolute;
+  left: 0;
+  top: -4px;
+  font-size: 20px;
+  line-height: 1;
+}
+
+/* DIAMOND */
+.particle.diamond {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+}
+    /* COLORS */
+    .particle.pink {
+    background: #FF69B4;
+    color: #FF69B4;
+    box-shadow: 0 0 8px #FF69B4;
     }
 
-    .particle.small { width: 6px; height: 6px; opacity: 0.7; }
-    .particle.medium { width: 12px; height: 12px; opacity: 0.6; }
-    .particle.large { width: 18px; height: 18px; opacity: 0.5; }
-
-    .particle.pink { background: #FF69B4; box-shadow: 0 0 15px rgba(255, 105, 180, 0.9); }
-    .particle.purple { background: #DA70D6; box-shadow: 0 0 15px rgba(218, 112, 214, 0.9); }
-    .particle.blue { background: #87CEEB; box-shadow: 0 0 15px rgba(135, 206, 235, 0.9); }
-    .particle.yellow { background: #FFD700; box-shadow: 0 0 15px rgba(255, 215, 0, 0.9); }
-
-    @keyframes float {
-      0%, 100% { transform: translateY(0) translateX(0) scale(1) rotate(0deg); opacity: 0.5; }
-      25% { transform: translateY(-40px) translateX(20px) scale(1.1) rotate(90deg); opacity: 0.8; }
-      50% { transform: translateY(-80px) translateX(-20px) scale(0.9) rotate(180deg); opacity: 0.6; }
-      75% { transform: translateY(-40px) translateX(15px) scale(1.1) rotate(270deg); opacity: 0.7; }
+    .particle.purple {
+    background: #DA70D6;
+    color: #DA70D6;
+    box-shadow: 0 0 8px #DA70D6;
     }
+
+    .particle.blue {
+    background: #87CEEB;
+    color: #87CEEB;
+    box-shadow: 0 0 8px #87CEEB;
+    }
+
+    .particle.yellow {
+    background: #FFD700;
+    color: #FFD700;
+    box-shadow: 0 0 8px #FFD700;
+    }
+
+    /* STARS / SPARKLES NEED THEIR COLOR ON THE TEXT */
+    .particle.star.pink,
+    .particle.sparkle.pink {
+    color: #FF69B4;
+    }
+
+    .particle.star.purple,
+    .particle.sparkle.purple {
+    color: #DA70D6;
+    }
+
+    .particle.star.blue,
+    .particle.sparkle.blue {
+    color: #87CEEB;
+    }
+
+    .particle.star.yellow,
+    .particle.sparkle.yellow {
+    color: #FFD700;
+    }
+
+    /* FLOATING + TWINKLING */
+    @keyframes particleFloat {
+    0% {
+        transform: translate(0, 0) scale(0.7) rotate(0deg);
+        opacity: 0.15;
+    }
+
+    25% {
+        transform: translate(20px, -35px) scale(1.15) rotate(90deg);
+        opacity: 0.8;
+    }
+
+    50% {
+        transform: translate(-15px, -70px) scale(0.8) rotate(180deg);
+        opacity: 0.35;
+    }
+
+    75% {
+        transform: translate(15px, -35px) scale(1.2) rotate(270deg);
+        opacity: 0.75;
+    }
+
+    100% {
+        transform: translate(0, 0) scale(0.7) rotate(360deg);
+        opacity: 0.15;
+    }
+    }
+
 
     .phone-frame {
       position: relative;
@@ -84,11 +194,19 @@
     }
 
     .screen { display: none; }
+    /* FIX: was "justify-content: center" -- with content taller
+       than the visible box, centering pushes part of the content
+       ABOVE the top edge, and since the scrollable area starts at
+       scrollTop 0, that overflow above is impossible to reach and
+       looked "invisible" (this is why the top of the H1 / "Thank
+       You!" heading was getting cut off in your screenshots).
+       Starting the content flush at the top fixes that -- nothing
+       about the meme/gif box itself was touched. */
     .screen.active { 
       display: flex; 
       flex-direction: column;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-start;
       min-height: 100%;
       animation: fadeIn 0.4s ease;
     }
@@ -111,7 +229,7 @@
 
     h2 {
       font-size: 24px;
-      color: #6B2D5C;
+      color: #ff00bf;
       margin-bottom: 0.5rem;
     }
 
@@ -133,8 +251,8 @@
       padding: 1.5rem;
       margin: 1rem 0;
       text-align: center;
-      color: #666;
-      font-size: 15px;
+      color: #fd0000;
+      font-size: 25px;
       line-height: 1.6;
       font-weight: 500;
       box-shadow: 0 4px 15px rgba(255, 179, 230, 0.2);
@@ -182,6 +300,7 @@
        "aspect-portrait" to "aspect-landscape" on the
        matching <div class="meme-container ..."> tag
        further down in the HTML.
+       (UNTOUCHED -- exactly as before.)
     ============================================ */
     .meme-container {
       width: 100%;
@@ -248,7 +367,7 @@
     }
 
     button {
-      background: linear-gradient(135deg, #FFB3E6 0%, #E0B8FF 100%);
+      background: linear-gradient(135deg, #2d00f7 0%, #e60000 100%);
       color: white;
       border: none;
       padding: 14px 32px;
@@ -274,7 +393,7 @@
       position: fixed;
       bottom: 12px;
       right: 12px;
-      background: rgba(224, 184, 255, 0.9);
+      background: rgba(250, 92, 0, 0.9);
       color: white;
       padding: 8px 12px;
       border-radius: 20px;
@@ -290,6 +409,7 @@
        scratched + congrats message has finished.
        object-fit: contain means ANY gif shape (tall,
        wide, square) shows in full, never cropped.
+       (UNTOUCHED -- exactly as before.)
     ============================================ */
     .scratch-container {
       width: 100%;
@@ -323,9 +443,9 @@
       height: 100%;
       border-radius: 13px;
       object-fit: contain;
-      background: linear-gradient(135deg, #FFF0F5 0%, #F0E6FF 100%);
+      background: linear-gradient(135deg, #e2028c 0%, #F0E6FF 100%);
       opacity: 0;
-      transition: opacity 0.5s ease;
+      transition: none;
       z-index: 1;
     }
 
@@ -360,22 +480,30 @@
     }
 
     .congrats-message {
-      position: fixed;
+      position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background: linear-gradient(135deg, #FFB3E6 0%, #E0B8FF 100%);
+
+      width: 85%;
+      height: 150px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      background: linear-gradient(135deg, #52a7a2 0%, #2f258b 100%);
       color: white;
-      padding: 2rem 3rem;
-      border-radius: 30px;
-      font-size: 28px;
-      font-weight: bold;
-      z-index: 999;
+      padding: 1rem 1.5rem;
+      border-radius: 40px;
+      font-size: 22px;
+      z-index: 10;
       text-align: center;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-      animation: congratsAnimation 1.5s ease-in-out;
+
+      animation: congratsAnimation 3.5s ease-in-out;
       pointer-events: none;
     }
+
 
     @keyframes congratsAnimation {
       0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
@@ -410,7 +538,9 @@
         </div>
         <img id="meme1Gif" class="meme-gif" style="display: none;" alt="Meme GIF">
       </div>
-      <p class="sound-hint"> MU HE HE HE HE HE</p>
+      <p class="sound-hint"> <a href="https://www.instagram.com/ahnaf_lohit_07/" target="_blank">
+    © AHNAF TAHMID LOHIT</p>
+    </a>
       
       <button onclick="goToPage(2)">Next Page →</button>
       <p class="page-indicator">Page 1 of 3</p>
@@ -418,8 +548,8 @@
 
     <!-- Page 2 - Scratch Card -->
     <div class="screen" id="page2">
-      <h2>🎁 SCRATCH & REVEAL! 🎁</h2>
-      <p class="scratch-instruction">Scratch the card to unlock a random meme! 😂</p>
+      <h2>🎁 SCRATCH & SEE! 🎁</h2>
+      <p class="scratch-instruction">Scratch the card to See the prize! </p>
       
       <div class="scratch-container">
         <img id="scratchGifPlayer" class="scratch-gif">
@@ -438,7 +568,7 @@
     <div class="screen" id="page3">
       <div class="thank-you-text">
         <div class="thank-you-emoji">✨ Thank You! ✨</div>
-        <p>For being part of our ENGLISH FAMILY TOUR ADVENTURE🌟 Your contribution will take this trip from a mere journey to an entire set of memories that will be hard to forget. We wish you have fun at every point of your tour!</p>
+        <p>For being part of our ENGLISH FAMILY TOUR ADVENTURE🌟 Your contribution will take this trip from a mere journey to an entire set of memories that will be hard to forget. We wish you have fun at every point of our tour!</p>
       </div>
       
       <!-- Change class to "aspect-landscape" if this video is horizontal -->
@@ -449,7 +579,10 @@
         </div>
         <img id="meme2Gif" class="meme-gif" style="display: none;" alt="Meme GIF">
       </div>
-      <p class="sound-hint">"I'm not superstitious, but I am a little stitious. </p>
+      <p class="sound-hint">  <a href="https://www.instagram.com/ahnaf_lohit_07/" target="_blank">
+    © AHNAF TAHMID LOHIT
+  </a>
+</p>
       
       <div class="button-row">
         <button onclick="goToPage(2)">← Back</button>
@@ -462,7 +595,9 @@
 </div>
 
 <div class="credit">
-  © AHNAF TAHMID LOHIT
+  <a href="https://www.instagram.com/ahnaf_lohit_07/" target="_blank">
+    © AHNAF TAHMID LOHIT
+  </a>
 </div>
 
 <script>
@@ -481,81 +616,375 @@
   // clearly visible on the video itself.
   // ========================================================
 
-const MEME_GIF_1 = "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExOWV3NHpibTJia3dkNWtmNDM4a2J3amk0OGh1aHMwNHNwM3k1c2tseiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l3q2wJsC23ikJg9xe/giphy.gif";
+const MEME_GIF_1 = "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExcG4xNDBkcjdsN3QzcGtwY3NtOTU4ejB1ZTRyMmw3aWl3dTJhOTNydyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/LPFNd1AJBoYcVUExmE/giphy.gif";
 
+  // FIX: this was referenced later but never declared, which
+  // threw a silent JavaScript error and was the reason the
+  // Page 3 video meme never loaded (stuck on the "Add
+  // MEME_VIDEO_2 link below" placeholder in your screenshot).
+  // Paste your second meme's Giphy link between the quotes
+  // below; leave it as "" until you have one.
+  const MEME_GIF_2 = "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExaW8zanYwdjhuOHp0bGVzczJuMzJ2OWNxYjhvbnlyYTAybG1wMTIyNCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3oz8xIsloV7zOmt81G/giphy.gif";
+
+
+  // ========================================================
+  // SCRATCH CARD SETTINGS — tweak these two numbers to taste
+  // ========================================================
+  // BRUSH SIZE: how big the eraser is per scratch stroke, in
+  // pixels. Bigger number = bigger brush = clears more area per
+  // swipe (feels easier/faster to scratch off). Smaller number
+  // = smaller brush = needs more careful, thorough scratching.
+  const SCRATCH_BRUSH_SIZE = 45;
+
+  // REVEAL THRESHOLD: what fraction of the card must be cleared
+  // before it "finishes" and reveals the gif. 0.92 = 92%. Raise
+  // this closer to 1 to require more complete scratching; lower
+  // it to let it reveal sooner.
+  const SCRATCH_REVEAL_THRESHOLD = 0.75;
+
+  // How long the congrats message stays on screen (ms)
+  const CONGRATS_DURATION = 3500;
+
+  // Random 1-2 word congrats shown each time someone finishes
+  // scratching. Add, remove, or edit any of these freely.
+  const CONGRATS_WORDS = [
+    "আপনি পাস!", "তুমি ফেইল", "এ আমি বিশ্বাস করি না!", "মুরব্বি মুরব্বি উহহু!", "আহারে...!", "বার বার শূধু আমার উপরেই!",
+    "এ কেমন বিচার!", "ট্যাকা নাই!", "সঠিক বলেছেন!", "চাচা আপনে!", "এ জীবন রেখে কি লাভ!!",
+    "আমার সরম করে!", "পড়া মাথায় ঢুকে না!", "টূরু লাব!", "ঘূমাতে পারি না সারারাত ধরে!", "জে আচ্ছা!",
+    "এই তুই কি বললি, এই!!", "এইটা আমরা জানতাম!", "Tung Dung Tenaw!", "কি মানুষ বাবা ছি!", "তোমার বুকে কি কষ্ট!", "আরে এরা কারা! ", " আপনি এত্ত সুন্দর ওয়াও!", "Control Uday Control!", "Ayein, Beigan!"
+  ];
+
+  function getRandomCongrats() {
+    return CONGRATS_WORDS[Math.floor(Math.random() * CONGRATS_WORDS.length)];
+  }
 
   // ========================================================
   // PAGE 2 — SCRATCH CARD GIFs
   // ========================================================
   // Get each link from Giphy: search a GIF → click it →
-  // "Copy GIF Link". Add as MANY as you want below — 5, 20,
-  // 50+, no limit — just keep adding lines in the same format.
+  // "Copy GIF Link". 50 slots are ready below — just paste a
+  // URL between the quotes on any "SCRATCH_GIF_N" line to fill
+  // it in (empty/placeholder slots are automatically skipped).
+  // Add even more by copying the same "..." pattern on a new
+  // line at the end of the list.
   // ========================================================
   const SCRATCH_GIF_URLS = [
     "https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExemFuZ2ExbDZ5YThzNnZia2lrMnRiY25hNGV2MWY4ZTRhamo3ZjB5bCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/YgbRzM7Ma6aFTNz0dX/giphy.gif",
+    "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExbmhsMHRyZTF4b2Z6b2l0dXB6NXp3NTR2czMwMWFuZ2d2MDR6emtxaCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/RY8TYPrSVULrYf8t2j/giphy.gif",
+    "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExZ2NpcTZvZ3EwbWUwNXlhMWExa3Z0bTRycWplZTdmZGF1dms5aGtjcCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/jBupZrapLgk6mvlvmm/giphy.gif",
+    "https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExbng1MjB4MW91amF1azlrNmI4YWF6NXRtMG9jcHh1bm9rOG9kaGp5eiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/tphCApwvdtC1VJabZ1/giphy.gif",
     "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExNGhvYWkzYmFmOGZ2YjF0NXBrbWE2NDZ1enh4Ym5ubDV0d2xseXhlYyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/t8xgPfC5oNIRMrNooe/giphy.gif",
-    "SCRATCH_GIF_3",
-    "SCRATCH_GIF_4",
-    "SCRATCH_GIF_5",
-    "SCRATCH_GIF_6",
-    "SCRATCH_GIF_7",
+    "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExbHRpMWZvNzJjcG9xODBqeHZubmcyNGdud2ZwZWVybjZ4M2k2enplZiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ZCyR1vgUkoSk5ywKsE/giphy.gif",
+    "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExdWs1cWpyMXdtbW5kNWptcGp0dDB2MDJvbW0yeHc3bDVvMGw1Z2Z3cSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/PleihcHr0kbJVD0bNe/giphy.gif",
     "SCRATCH_GIF_8",
     "SCRATCH_GIF_9",
-    "SCRATCH_GIF_10"
- 
+    "SCRATCH_GIF_10",
+    "SCRATCH_GIF_11",
+    "SCRATCH_GIF_12",
+    "SCRATCH_GIF_13",
+    "SCRATCH_GIF_14",
+    "SCRATCH_GIF_15",
+    "SCRATCH_GIF_16",
+    "SCRATCH_GIF_17",
+    "SCRATCH_GIF_18",
+    "SCRATCH_GIF_19",
+    "SCRATCH_GIF_20",
+    "SCRATCH_GIF_21",
+    "SCRATCH_GIF_22",
+    "SCRATCH_GIF_23",
+    "SCRATCH_GIF_24",
+    "SCRATCH_GIF_25",
+    "SCRATCH_GIF_26",
+    "SCRATCH_GIF_27",
+    "SCRATCH_GIF_28",
+    "SCRATCH_GIF_29",
+    "SCRATCH_GIF_30",
+    "SCRATCH_GIF_31",
+    "SCRATCH_GIF_32",
+    "SCRATCH_GIF_33",
+    "SCRATCH_GIF_34",
+    "SCRATCH_GIF_35",
+    "SCRATCH_GIF_36",
+    "SCRATCH_GIF_37",
+    "SCRATCH_GIF_38",
+    "SCRATCH_GIF_39",
+    "SCRATCH_GIF_40",
+    "SCRATCH_GIF_41",
+    "SCRATCH_GIF_42",
+    "SCRATCH_GIF_43",
+    "SCRATCH_GIF_44",
+    "SCRATCH_GIF_45",
+    "SCRATCH_GIF_46",
+    "SCRATCH_GIF_47",
+    "SCRATCH_GIF_48",
+    "SCRATCH_GIF_49",
+    "SCRATCH_GIF_50"
+
     // Add more lines here, e.g.:
     // ,"https://media.giphy.com/media/XXXXXXXX/giphy.gif"
   ];
 
-  // How much of the card must be scratched before it reveals (0.88 = 88%)
-  const SCRATCH_REVEAL_THRESHOLD = 0.88;
-  // Size of the eraser per stroke — smaller = needs more scratching
-  const SCRATCH_ERASER_SIZE = 25;
-  // How long the congrats message stays on screen (ms)
-  const CONGRATS_DURATION = 1500;
+let scratchCtx = null;
+let isScratched = false;
+let preparedScratchGifPromise = null;
 
-  let scratchCtx = null;
-  let isScratched = false;
 
-  // ---- Shuffle-bag randomizer: deals out every gif once in
-  // random order before any repeat, so it feels genuinely random
-  // even with a big list, instead of Math.random() occasionally
-  // picking the same one twice in a row. ----
-  let gifDeck = [];
-  let lastShownGif = null;
+// ========================================================
+// SMART GLOBAL GIF ROUND SYSTEM
+// ========================================================
 
-  function shuffleArray(arr) {
-    const array = arr.slice();
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
+const CROSS_VISITOR_NAMESPACE = "ahnaftahmidlohit-happytour2026";
+const CROSS_VISITOR_KEY = "scratchcard";
+
+
+// Get ONLY real GIF URLs
+function getValidScratchGifs() {
+  return SCRATCH_GIF_URLS.filter(url =>
+    typeof url === "string" &&
+    url.trim() !== "" &&
+    !url.includes("SCRATCH_GIF_")
+  );
+}
+
+
+// Proper random shuffle
+function shuffleArray(array) {
+  const result = array.slice();
+
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+
+    [result[i], result[j]] =
+      [result[j], result[i]];
   }
 
-  function getValidScratchGifs() {
-    return SCRATCH_GIF_URLS.filter(url => url && !url.includes("SCRATCH_GIF"));
+  return result;
+}
+
+
+// Deterministic shuffle
+function seededShuffle(array, seed) {
+  const result = array.slice();
+
+  let s = seed >>> 0;
+
+  function random() {
+    s = (s * 1664525 + 1013904223) >>> 0;
+    return s / 4294967296;
   }
 
-  function refillDeck() {
-    gifDeck = shuffleArray(getValidScratchGifs());
-    if (gifDeck.length > 1 && gifDeck[gifDeck.length - 1] === lastShownGif) {
-      // avoid an immediate repeat right at the reshuffle boundary
-      const swapIndex = gifDeck.length - 2;
-      [gifDeck[gifDeck.length - 1], gifDeck[swapIndex]] = [gifDeck[swapIndex], gifDeck[gifDeck.length - 1]];
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(random() * (i + 1));
+
+    [result[i], result[j]] =
+      [result[j], result[i]];
+  }
+
+  return result;
+}
+
+
+// ========================================================
+// GLOBAL VISITOR COUNTER
+// ========================================================
+
+async function getGlobalRotationNumber() {
+
+  try {
+
+    const controller = new AbortController();
+
+    const timeout = setTimeout(
+      () => controller.abort(),
+      4000
+    );
+
+    const res = await fetch(
+      `https://api.countapi.xyz/hit/${CROSS_VISITOR_NAMESPACE}/${CROSS_VISITOR_KEY}`,
+      {
+        cache: "no-store",
+        signal: controller.signal
+      }
+    );
+
+    clearTimeout(timeout);
+
+    if (!res.ok) {
+      throw new Error(
+        `Counter returned HTTP ${res.status}`
+      );
+    }
+
+    const json = await res.json();
+
+    if (
+      !json ||
+      !Number.isFinite(Number(json.value))
+    ) {
+      throw new Error("Invalid counter response");
+    }
+
+    return Number(json.value);
+
+  } catch (err) {
+
+    console.warn(
+      "Shared GIF counter unavailable. Using local fallback.",
+      err
+    );
+
+    return null;
+  }
+}
+
+
+// ========================================================
+// LOCAL FALLBACK
+// ========================================================
+
+let localDeck = [];
+let lastShownGif = null;
+
+
+function getNextLocalGif() {
+
+  const validGifs = getValidScratchGifs();
+
+  if (validGifs.length === 0) {
+    return null;
+  }
+
+
+  // Start a new local round
+  if (localDeck.length === 0) {
+
+    localDeck = shuffleArray(validGifs);
+
+
+    // Prevent immediate repeat
+    if (
+      localDeck.length > 1 &&
+      localDeck[localDeck.length - 1] === lastShownGif
+    ) {
+
+      const swapIndex =
+        Math.floor(
+          Math.random() * (localDeck.length - 1)
+        );
+
+      [
+        localDeck[localDeck.length - 1],
+        localDeck[swapIndex]
+      ] = [
+        localDeck[swapIndex],
+        localDeck[localDeck.length - 1]
+      ];
     }
   }
 
-  function getNextScratchGif() {
-    if (gifDeck.length === 0) refillDeck();
-    if (gifDeck.length === 0) {
-      console.log("No scratch GIFs added yet!");
-      return null;
-    }
-    const gif = gifDeck.pop();
+
+  const gif = localDeck.pop();
+
+  lastShownGif = gif;
+
+  return gif;
+}
+
+
+// ========================================================
+// MAIN GIF SELECTOR
+// ========================================================
+
+async function getNextScratchGif() {
+
+  const validGifs = getValidScratchGifs();
+
+
+  if (validGifs.length === 0) {
+
+    console.warn(
+      "No valid scratch GIFs found."
+    );
+
+    return null;
+  }
+
+
+  const globalNumber =
+    await getGlobalRotationNumber();
+
+
+  // ======================================================
+  // GLOBAL ROUND SYSTEM
+  // ======================================================
+
+  if (globalNumber !== null) {
+
+    // Automatically count all valid GIFs
+    const gifCount =
+      validGifs.length;
+
+
+    // Example with 50 GIFs:
+    //
+    // 1  - 50  = Round 1
+    // 51 - 100 = Round 2
+    // 101-150 = Round 3
+    //
+    // If you add 5 more GIFs:
+    //
+    // 1  - 55  = Round 1
+    // 56 - 110 = Round 2
+    //
+    // No number needs to be changed manually.
+
+    const roundNumber =
+      Math.floor(
+        (globalNumber - 1) / gifCount
+      );
+
+
+    // Position inside current round
+    const positionInRound =
+      (globalNumber - 1) % gifCount;
+
+
+    // Every round gets a different shuffle
+    const seed =
+      20260910 +
+      (roundNumber * 7919);
+
+
+    const rotationDeck =
+      seededShuffle(
+        validGifs,
+        seed
+      );
+
+
+    const gif =
+      rotationDeck[positionInRound];
+
+
     lastShownGif = gif;
+
+
+    console.log(
+      `GIF Round ${roundNumber + 1} | ` +
+      `GIF ${positionInRound + 1}/${gifCount}`
+    );
+
+
     return gif;
   }
+
+
+  // ======================================================
+  // FALLBACK
+  // ======================================================
+
+  return getNextLocalGif();
+}
 
   function extractDriveId(url) {
     if (!url) return null;
@@ -590,6 +1019,7 @@ const MEME_GIF_1 = "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExOWV3NHpibT
   function goToPage(page) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById('page' + page).classList.add('active');
+    document.querySelector('.screen-container').scrollTop = 0;
     
     if (page === 2) {
       setTimeout(() => initScratch(), 100);
@@ -599,8 +1029,8 @@ const MEME_GIF_1 = "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExOWV3NHpibT
   function showCongratsMessage() {
     const message = document.createElement('div');
     message.className = 'congrats-message';
-    message.textContent = '🎉 WOOHOO! 🎉';
-    document.body.appendChild(message);
+    message.textContent = getRandomCongrats();
+    document.querySelector('.scratch-container').appendChild(message); // was: document.body.appendChild(message)
     setTimeout(() => message.remove(), CONGRATS_DURATION);
   }
 
@@ -631,12 +1061,31 @@ const MEME_GIF_1 = "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExOWV3NHpibT
     
     scratchCtx = canvas.getContext('2d');
     drawScratchOverlay(canvas);
-    
-    // Fully reset the gif — nothing shows until reveal happens
+    // Keep the GIF invisible, but preload it as soon as Page 2 opens.
     gifPlayer.src = '';
     gifPlayer.style.opacity = '0';
-    
+
     isScratched = false;
+
+    preparedScratchGifPromise = getNextScratchGif().then(gifUrl => {
+      if (!gifUrl) return null;
+
+      return new Promise(resolve => {
+        const preloader = new Image();
+
+        preloader.onload = () => {
+          gifPlayer.src = gifUrl;
+          resolve(gifUrl);
+        };
+
+        preloader.onerror = () => {
+          gifPlayer.src = gifUrl;
+          resolve(gifUrl);
+        };
+
+        preloader.src = gifUrl;
+      });
+    });
     
     canvas.onmousedown = null;
     canvas.onmousemove = null;
@@ -665,8 +1114,8 @@ const MEME_GIF_1 = "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExOWV3NHpibT
     const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
     const y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
     
-    const half = SCRATCH_ERASER_SIZE / 2;
-    scratchCtx.clearRect(x - half, y - half, SCRATCH_ERASER_SIZE, SCRATCH_ERASER_SIZE);
+    const half = SCRATCH_BRUSH_SIZE / 2;
+    scratchCtx.clearRect(x - half, y - half, SCRATCH_BRUSH_SIZE, SCRATCH_BRUSH_SIZE);
     
     const imageData = scratchCtx.getImageData(0, 0, canvas.width, canvas.height);
     const data = imageData.data;
@@ -679,44 +1128,60 @@ const MEME_GIF_1 = "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExOWV3NHpibT
     if (transparentPixels > (data.length / 4) * SCRATCH_REVEAL_THRESHOLD) {
       isScratched = true;
 
-      // Step 1: card is fully scratched away, canvas disappears completely
+      // Step 1: remove scratch card
       scratchCtx.clearRect(0, 0, canvas.width, canvas.height);
       canvas.style.display = 'none';
 
-      // Step 2: congrats message plays (gif is still NOT visible)
+      // Step 2: show congrats
       showCongratsMessage();
 
-      // Step 3: only after the congrats message has fully finished,
-      // load and reveal the gif
+      // Step 3: use the GIF that was prepared while scratching
+      const gifPlayer = document.getElementById('scratchGifPlayer');
+
+      if (preparedScratchGifPromise) {
+        preparedScratchGifPromise.then(gifUrl => {
+          if (gifUrl) {
+            gifPlayer.src = gifUrl;
+          }
+        });
+      }
+
+      // Step 4: reveal GIF when congrats finishes
       setTimeout(() => {
-        const gifPlayer = document.getElementById('scratchGifPlayer');
-        const gifUrl = getNextScratchGif();
-        if (gifUrl) {
-          gifPlayer.src = gifUrl;
-          gifPlayer.style.opacity = '1';
-        }
+        gifPlayer.style.opacity = '1';
       }, CONGRATS_DURATION);
     }
   }
 
   function stopScratch() {}
 
-  function createParticles() {
+    function createParticles() {
     const container = document.getElementById('particlesContainer');
-    const particleCount = 30;
-    const sizes = ['small', 'medium', 'large'];
+
+    const particleCount = 45;
+    const types = ['dot', 'dot', 'dot', 'star', 'sparkle', 'diamond'];
     const colors = ['pink', 'purple', 'blue', 'yellow'];
-    
+
     for (let i = 0; i < particleCount; i++) {
-      const particle = document.createElement('div');
-      particle.className = `particle ${sizes[Math.floor(Math.random() * sizes.length)]} ${colors[Math.floor(Math.random() * colors.length)]}`;
-      particle.style.left = Math.random() * 100 + '%';
-      particle.style.bottom = Math.random() * 100 + '%';
-      particle.style.animationDelay = Math.random() * 6 + 's';
-      particle.style.animationDuration = (4 + Math.random() * 4) + 's';
-      container.appendChild(particle);
+        const particle = document.createElement('div');
+
+        const type = types[Math.floor(Math.random() * types.length)];
+        const color = colors[Math.floor(Math.random() * colors.length)];
+
+        particle.className = `particle ${type} ${color}`;
+
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.top = Math.random() * 100 + '%';
+
+        particle.style.animationDelay = Math.random() * 6 + 's';
+        particle.style.animationDuration = (5 + Math.random() * 6) + 's';
+
+        const scale = 0.5 + Math.random() * 1.2;
+        particle.style.transform = `scale(${scale})`;
+
+        container.appendChild(particle);
     }
-  }
+    }
 
 window.addEventListener('load', function() {
   createParticles();
