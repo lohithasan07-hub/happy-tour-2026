@@ -542,7 +542,7 @@
 
     /* ============================================
        SCRATCH CARD — GIF is invisible until fully
-       scratched + congrats message has finished.
+       scratched + ts message has finished.
        object-fit: contain means ANY gif shape (tall,
        wide, square) shows in full, never cropped.
        (UNTOUCHED -- exactly as before.)
@@ -618,7 +618,7 @@
       padding: 10px 16px;
     }
 
-    .congrats-message {
+    .ts-message {
       position: absolute;
       top: 50%;
       left: 50%;
@@ -639,12 +639,12 @@
       z-index: 10;
       text-align: center;
 
-      animation: congratsAnimation 3.5s ease-in-out;
+      animation: tsAnimation 3.5s ease-in-out;
       pointer-events: none;
     }
 
 
-    @keyframes congratsAnimation {
+    @keyframes tsAnimation {
       0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
       50% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
       100% { opacity: 0; transform: translate(-50%, -50%) scale(1); }
@@ -1239,9 +1239,9 @@ const MEME_GIF_1 = "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExcG4xNDBkcj
   // Random 1-2 word congrats shown each time someone finishes
   // scratching. Add, remove, or edit any of these freely.
   const CONGRATS_WORDS = [
-   "Skill Issue", "Sike! ", "Sorry, Not Sorry", "Womp Womp 📉", "Don't Try Again", "404: Prize Not Found", "Bruh 💀","Awkward...", "No Rizz No Prize", "Task Failed Successfully", "Error 404: Luck Not Found",
-   "Loading... Nope", "Zero Aura Gained", "DIBO NA TAKA JAO 💀", "EH SOKH KOTO", "Unemployed Luck", "Broke Energy", "Aura Lost 📉", "Zero Aura", "No Luck Detected", "Try Again Later",   "Prize.exe Failed",  "Continue? 0 Credits",
-  "Luck.exe Crashed", "System Says Nope", "Error: Bro Lost", "Connection Lost", "Prize Disconnected", "Maybe Next Century", "Not Even Close", "You Dodged the Prize", "Not My Problem",  "Quest Failed", "Server Rejected You", "Timeout 💀", "You Got Scammed 💀", "Achievement Unlocked: Nothing",
+   "TUFAN GHOTOK", "Kisssu nai! ", "Sorry, Not Sorry", "blehhhhh 📉", "Don't Try Again", "404: Prize Not Found", "000.50 poysa","bank e taka nai", "No Rizz No Prize", "Task Failed Successfully", "Error 404: Luck Not Found",
+   "Loading... Nope", "Zero Aura Gained", "DIBO NA TAKA JAO 💀", "EH SOKH KOTO", "Unemployed Luck", "DEBT -1$ Million", "Aura Lost 📉", "Ca Khaben?", "No Luck Detected", "Try Again Later",   "Prize.exe Failed",  "Etai Science",
+  "Luck.exe Crashed", "System Says Nope", "Error: no funds", "Connection Lost", "Prize Disconnected", "Maybe Next Century", "Mon valo nei", "You Dodged the Prize", "Not My Problem",  "Quest Failed", "Server Rejected You", "Timeout 💀", "You Got Scammed 💀", "Achievement Unlocked: Nothing",
   ];
 
   function getRandomCongrats() {
