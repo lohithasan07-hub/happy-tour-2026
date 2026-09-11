@@ -709,7 +709,7 @@
       
       <div class="button-row">
         <button onclick="goToPage(1)">← Back</button>
-        <button onclick="playEventSound(SOUND_PAGE2_NEXT); goToPage(3)">Next →</button>
+        <button onclick="nextFromPage2()">Next →</button>
       </div>
       
       <p class="page-indicator">Page 2 of 3</p>
@@ -803,7 +803,7 @@
   // taps the splash screen).
   // ========================================================
   const SOUND_PAGE1_NEXT = "https://www.myinstants.com/media/sounds/mac-quack.mp3";              // Page 1 "Next Page →"
-  const SOUND_PAGE2_NEXT = "https://www.myinstants.com/media/sounds/meme-de-creditos-finales.mp3"; // Page 2 "Next →" (into the last page)
+  const SOUND_PAGE2_NEXT = "https://www.myinstants.com/media/sounds/khatam-tata.mp3"; // Page 2 "Next →" (into the last page)
     const SOUND_SCRATCH_REVEAL_URLS = [
     "https://www.myinstants.com/media/sounds/anime-wow-sound-effect-mp3cut.mp3",
     "https://www.myinstants.com/media/sounds/indian-song.mp3",
@@ -830,7 +830,6 @@
     "https://www.myinstants.com/media/sounds/kuchu-puchu-tum-kaha-ho.mp3",
     "https://www.myinstants.com/media/sounds/bollywood-meme.mp3",
     "https://www.myinstants.com/media/sounds/main-nahi-dikhaunga.mp3",
-    "https://www.myinstants.com/media/sounds/khatam-tata.mp3",
     "https://www.myinstants.com/media/sounds/ye-kya-hai.mp3",
     "https://www.myinstants.com/media/sounds/kaisa-laga-mera-majak.mp3",
     "https://www.myinstants.com/media/sounds/abhi-maja-ayega-na-bhidu.mp3",
@@ -840,9 +839,92 @@
     "https://www.myinstants.com/media/sounds/ei-tomra-kemon-aso-helicopter-milon.mp3",
     "https://www.myinstants.com/media/sounds/bhai-yaha-kya-ho-rha-hai.mp3"
 
-
-
   ];
+
+// ========================================================
+// RANDOM SFX — NO IMMEDIATE REPEAT
+// SELECT + PRELOAD IN ADVANCE
+// ========================================================
+
+function pickRandomExcluding(list, excludeUrl) {
+
+  if (!list || list.length === 0) {
+    return null;
+  }
+
+  if (list.length === 1) {
+    return list[0];
+  }
+
+  const choices = list.filter(url => url !== excludeUrl);
+
+  return choices[Math.floor(Math.random() * choices.length)];
+}
+
+
+function getLastUsedSound(storageKey) {
+
+  try {
+    return localStorage.getItem(storageKey);
+  } catch (e) {
+    return null;
+  }
+
+}
+
+
+function setLastUsedSound(storageKey, url) {
+
+  try {
+    localStorage.setItem(storageKey, url);
+  } catch (e) {
+    // localStorage unavailable হলে ignore
+  }
+
+}
+
+
+function preloadSingleAudio(url) {
+
+  if (!url) {
+    return null;
+  }
+
+  const audio = new Audio();
+
+  audio.preload = "auto";
+  audio.src = url;
+
+  audio.load();
+
+  return audio;
+
+}
+
+
+// --------------------------------------------------------
+// SELECT + PRELOAD TAP SOUND IMMEDIATELY
+// --------------------------------------------------------
+
+let selectedTapUrl = pickRandomExcluding(
+  TAP_TO_ENTER_SOUND_URLS,
+  getLastUsedSound('lastTapSound')
+);
+
+let preloadedTapAudio = preloadSingleAudio(selectedTapUrl);
+
+
+// --------------------------------------------------------
+// SELECT + PRELOAD SCRATCH SOUND IMMEDIATELY
+// --------------------------------------------------------
+
+let selectedScratchUrl = pickRandomExcluding(
+  SOUND_SCRATCH_REVEAL_URLS,
+  getLastUsedSound('lastScratchSound')
+);
+
+let preloadedScratchAudio = preloadSingleAudio(selectedScratchUrl);
+
 
 const eventAudioCache = new Map();
 
@@ -872,55 +954,51 @@ function preloadEventSound(url) {
 
 function preloadAllSfx() {
 
-  const allSounds = [
-    ...TAP_TO_ENTER_SOUND_URLS,
-
-    SOUND_PAGE1_NEXT,
-    SOUND_PAGE2_NEXT,
-
-    ...SOUND_SCRATCH_REVEAL_URLS
-  ];
-
-  // Remove duplicate URLs
-  const uniqueSounds = [...new Set(allSounds)];
-
-  uniqueSounds.forEach(url => {
-    preloadEventSound(url);
-  });
+  // Dedicated page-transition sounds
+  preloadEventSound(SOUND_PAGE1_NEXT);
+  preloadEventSound(SOUND_PAGE2_NEXT);
 
 }
-
 
 // --------------------------------------------------------
 // STOP EVERY SFX THAT IS CURRENTLY PLAYING
 // --------------------------------------------------------
 
-function stopAllSfx() {
+  function stopAllSfx() {
 
-  eventAudioCache.forEach(audio => {
+    // Stop dedicated event sounds
+    eventAudioCache.forEach(audio => {
 
-    try {
-      audio.pause();
-      audio.currentTime = 0;
-    } catch (err) {
-      console.warn("Could not stop audio:", err);
+      try {
+        audio.pause();
+        audio.currentTime = 0;
+      } catch (err) {}
+
+    });
+
+
+    // Stop splash sound
+    if (window.tapAudio) {
+
+      try {
+        window.tapAudio.pause();
+        window.tapAudio.currentTime = 0;
+      } catch (err) {}
+
     }
 
-  });
 
-  // Splash sound uses window.tapAudio
-  if (window.tapAudio) {
+    // Stop preloaded scratch sound
+    if (preloadedScratchAudio) {
 
-    try {
-      window.tapAudio.pause();
-      window.tapAudio.currentTime = 0;
-    } catch (err) {
-      console.warn("Could not stop splash audio:", err);
+      try {
+        preloadedScratchAudio.pause();
+        preloadedScratchAudio.currentTime = 0;
+      } catch (err) {}
+
     }
 
   }
-
-}
 
 
 // --------------------------------------------------------
@@ -985,63 +1063,50 @@ preloadAllSfx();
   let splashTapped = false; // Prevent multiple taps
   let soundPlayedForSplash = false;
 
-  // Get a random sound URL from the list
-  function getRandomSoundUrl() {
-    if (TAP_TO_ENTER_SOUND_URLS.length === 0) {
-      console.warn("No sound URLs configured");
-      return null;
-    }
-    const randomIndex = Math.floor(Math.random() * TAP_TO_ENTER_SOUND_URLS.length);
-    return TAP_TO_ENTER_SOUND_URLS[randomIndex];
-  }
-
+// Tap sound is selected and preloaded
+// immediately when the page loads.
     function playTapSound() {
 
-      const soundUrl = getRandomSoundUrl();
-
-      if (!soundUrl) {
-        console.warn("No tap sound URL available");
+      if (!preloadedTapAudio) {
+        console.warn("No tap sound preloaded");
         return;
       }
 
       try {
 
-        let audio = eventAudioCache.get(soundUrl);
+        preloadedTapAudio.currentTime = 0;
+        preloadedTapAudio.volume = 1.0;
 
-        // Fallback
-        if (!audio) {
+        window.tapAudio = preloadedTapAudio;
 
-          audio = new Audio();
-
-          audio.preload = "auto";
-          audio.src = soundUrl;
-
-          eventAudioCache.set(soundUrl, audio);
-          audio.load();
-        }
-
-        // Start from beginning
-        audio.pause();
-        audio.currentTime = 0;
-        audio.volume = 1.0;
-
-        // Keep reference alive
-        window.tapAudio = audio;
-
-        const playPromise = audio.play();
+        const playPromise = preloadedTapAudio.play();
 
         if (playPromise !== undefined) {
 
           playPromise
             .then(() => {
 
-              console.log("Tap sound playing:", soundUrl);
+              console.log(
+                "Tap sound playing:",
+                selectedTapUrl
+              );
+
+              // Remember what was actually used
+              setLastUsedSound(
+                'lastTapSound',
+                selectedTapUrl
+              );
+
               soundPlayedForSplash = true;
 
             })
             .catch(error => {
 
-              console.error("Tap sound failed:", error);
+              console.error(
+                "Tap sound failed:",
+                error
+              );
+
               soundPlayedForSplash = false;
 
             });
@@ -1050,7 +1115,11 @@ preloadAllSfx();
 
       } catch (error) {
 
-        console.error("Could not play tap audio:", error);
+        console.error(
+          "Could not play tap audio:",
+          error
+        );
+
         soundPlayedForSplash = false;
 
       }
@@ -1552,6 +1621,16 @@ async function getNextScratchGif() {
   playEventSound(SOUND_PAGE1_NEXT);
 
 }
+
+function nextFromPage2() {
+
+  // First stop the current Page 2 sound
+  goToPage(3);
+
+  // Then play Page 2 -> Page 3 transition sound
+  playEventSound(SOUND_PAGE2_NEXT);
+
+}
     function goToPage(page) {
 
       // VERY IMPORTANT:
@@ -1579,18 +1658,51 @@ async function getNextScratchGif() {
       }
 
     }
-  function showCongratsMessage() {
+    function showCongratsMessage() {
 
-    const randomIndex = Math.floor(
-      Math.random() * SOUND_SCRATCH_REVEAL_URLS.length
-    );
+  // Play the scratch sound that was already selected + preloaded
+  if (preloadedScratchAudio) {
 
-    const randomSound =
-      SOUND_SCRATCH_REVEAL_URLS[randomIndex];
+    try {
+      preloadedScratchAudio.pause();
+      preloadedScratchAudio.currentTime = 0;
+      preloadedScratchAudio.volume = 0.8;
 
-    playEventSound(randomSound);
+      const playPromise = preloadedScratchAudio.play();
 
-    const message = document.createElement('div');
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+
+            console.log(
+              "Scratch sound playing:",
+              selectedScratchUrl
+            );
+
+            // Remember the sound actually used
+            setLastUsedSound(
+              'lastScratchSound',
+              selectedScratchUrl
+            );
+
+          })
+          .catch(err => {
+            console.warn(
+              "Scratch sound blocked:",
+              err
+            );
+          });
+      }
+
+    } catch (err) {
+      console.warn(
+        "Could not play scratch sound:",
+        err
+      );
+    }
+  }
+
+  const message = document.createElement('div');
     message.className = 'congrats-message';
     message.textContent = getRandomCongrats();
 
@@ -1805,8 +1917,6 @@ function checkScratchProgress() {
 
 }
 
-
-function stopScratch() {}
 
   function stopScratch() {}
 
