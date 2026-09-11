@@ -866,154 +866,103 @@
   }
 
   // Play the sound on tap (Mobile-optimized)
-  // FIX: previously this set soundPlayedForSplash = true *before*
-  // knowing whether audio.play() actually succeeded, so a single
-  // failed attempt (bad URL, blocked, etc.) permanently locked out
-  // any retry. Now the flag is only set once a sound actually
-  // starts playing, and if a URL fails we fall back to another
-  // one from the list instead of giving up.
-  function playTapSound() {
-    // Only play once per splash screen
-    if (soundPlayedForSplash) return;
+    function playTapSound() {
+      const soundUrl = getRandomSoundUrl();
 
-    if (TAP_TO_ENTER_SOUND_URLS.length === 0) {
-      console.warn("No sound URLs configured");
-      return;
+      if (!soundUrl) {
+        console.warn("No tap sound URL available");
+        return;
+      }
+
+      try {
+        const audio = new Audio();
+        audio.src = soundUrl;
+        audio.volume = 1.0;
+        audio.preload = "auto";
+
+        // Keep the audio object alive
+        window.tapAudio = audio;
+
+        const playPromise = audio.play();
+
+        if (playPromise !== undefined) {
+          playPromise
+            .then(() => {
+              console.log("Tap sound playing:", soundUrl);
+              soundPlayedForSplash = true;
+            })
+            .catch(error => {
+              console.error("Tap sound failed:", error);
+              soundPlayedForSplash = false;
+            });
+        }
+
+      } catch (error) {
+        console.error("Could not create tap audio:", error);
+        soundPlayedForSplash = false;
+      }
     }
-
-    // Shuffle a copy of the list so we try URLs in random order,
-    // and can fall through to the next one if one fails.
-    const shuffled = [...TAP_TO_ENTER_SOUND_URLS].sort(() => Math.random() - 0.5);
-    tryPlayFromList(shuffled, 0);
-  }
-
-  function tryPlayFromList(urls, index) {
-    if (soundPlayedForSplash) return; // a previous attempt already succeeded
-    if (index >= urls.length) {
-      console.warn("All tap sounds failed to play");
-      return;
-    }
-
-    const soundUrl = urls[index];
-    const audio = new Audio();
-    let settled = false;
-
-    const advance = (reason) => {
-      if (settled) return;
-      settled = true;
-      console.warn("Tap sound failed, trying next:", soundUrl, reason);
-      tryPlayFromList(urls, index + 1);
-    };
-
-    audio.src = soundUrl;
-    audio.volume = 0.8;
-    audio.preload = 'auto';
-
-    // Keep a reference so the Audio object isn't garbage-collected
-    // mid-playback (can silently cut off sound on some Android builds).
-    window.tapAudio = audio;
-
-    // FIX: removed "audio.crossOrigin = 'anonymous'" - that line
-    // forces the browser into strict CORS mode, and since
-    // myinstants.com doesn't send CORS headers for its audio
-    // files, the browser was silently refusing to load them at
-    // all. Normal playback (what we're doing here) never needed
-    // this - it's only required for Web Audio API / canvas access,
-    // which this code doesn't use.
-
-    audio.addEventListener('error', () => advance('media error'), { once: true });
-
-    const playPromise = audio.play();
-    if (playPromise !== undefined) {
-      playPromise
-        .then(() => {
-          settled = true;
-          soundPlayedForSplash = true;
-          console.log('Tap sound playing:', soundUrl);
-        })
-        .catch(error => advance(error));
-    } else {
-      // Older browsers that don't return a promise from play().
-      settled = true;
-      soundPlayedForSplash = true;
-    }
-  }
-
   // Handle tap to enter (Mobile-safe version)
-  function handleSplashTap(e) {
-    // Prevent accidental double-taps
-    if (splashTapped) return;
-    splashTapped = true;
+    function handleSplashTap(e) {
+      if (splashTapped) return;
 
-    const splashScreen = document.getElementById('splashScreen');
-    
-    // Prevent default touch behavior
-    if (e && e.preventDefault) {
-      e.preventDefault();
+      splashTapped = true;
+
+      const splashScreen = document.getElementById('splashScreen');
+
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+
+      // IMPORTANT:
+      // Audio is started directly inside the user interaction.
+      playTapSound();
+
+      splashScreen.style.transition = 'opacity 0.3s ease-out';
+      splashScreen.style.opacity = '0';
+
+      setTimeout(() => {
+        splashScreen.classList.add('hidden');
+      }, 300);
     }
-    if (e && e.stopPropagation) {
-      e.stopPropagation();
-    }
-    
-    // Play sound immediately (or as soon as browser allows)
-    playTapSound();
-    
-    // Fade out splash screen
-    splashScreen.style.transition = 'opacity 0.3s ease-out';
-    splashScreen.style.opacity = '0';
-    
-    // Hide after fade completes
-    setTimeout(() => {
-      splashScreen.classList.add('hidden');
-    }, 300);
-  }
 
   // ========================================================
   // ROBUST EVENT LISTENER SETUP
   // ========================================================
   
-  function setupSplashScreen() {
-    const splashScreen = document.getElementById('splashScreen');
-    
-    if (!splashScreen) {
-      console.warn('Splash screen element not found');
-      return;
-    }
+    function setupSplashScreen() {
+      const splashScreen = document.getElementById('splashScreen');
 
-    // FIX: this used to also listen for 'pointerdown', which fires
-    // *before* touchstart/click on Android and was racing with them
-    // to call handleSplashTap() - since handleSplashTap() calls
-    // preventDefault/stopPropagation and starts audio playback,
-    // having three separate listeners compete for the same tap was
-    // the main source of flaky tap sounds. touchstart (mobile) +
-    // click (desktop) is enough on its own.
-
-    // Touch Support (Mobile/Android)
-    splashScreen.addEventListener('touchstart', handleSplashTap, {
-      once: false,
-      passive: false // Allow preventDefault
-    });
-
-    // Mouse/Desktop Support
-    splashScreen.addEventListener('click', handleSplashTap, { once: false });
-
-    // Keyboard Support (for accessibility)
-    document.addEventListener('keydown', (e) => {
-      if (splashTapped) return;
-      // Space, Enter, or any key to trigger
-      if (e.key === ' ' || e.key === 'Enter') {
-        handleSplashTap(e);
+      if (!splashScreen) {
+        console.warn('Splash screen element not found');
+        return;
       }
-    });
 
-    // Add visual feedback for touch
-    splashScreen.style.userSelect = 'none';
-    splashScreen.style.webkitUserSelect = 'none';
-    splashScreen.style.touchAction = 'manipulation';
+      // Android / mobile
+      splashScreen.addEventListener('touchstart', handleSplashTap, {
+        passive: false
+      });
+
+      // Desktop
+      splashScreen.addEventListener('click', handleSplashTap);
+
+      // Keyboard
+      document.addEventListener('keydown', (e) => {
+        if (splashTapped) return;
+
+        if (e.key === 'Enter' || e.key === ' ') {
+          handleSplashTap(e);
+        }
+      });
+
+      splashScreen.style.userSelect = 'none';
+      splashScreen.style.webkitUserSelect = 'none';
+      splashScreen.style.touchAction = 'manipulation';
+
+      console.log('Splash screen initialized');
+    }
     
-    console.log('Splash screen initialized for mobile/desktop');
-  }
-
   // Initialize when DOM is ready
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', setupSplashScreen);
