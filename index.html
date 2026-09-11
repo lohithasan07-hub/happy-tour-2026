@@ -657,6 +657,9 @@
 <div class="splash-screen" id="splashScreen">
   <div class="particles-container" id="splashParticlesContainer"></div>
   <div class="splash-container">
+      <div style="font-size: 16px; color: #fff; font-weight: bold; margin-bottom: 12px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">
+    🔊 TURN UP YOUR VOLUME!
+  </div>
     <div class="splash-title">💎DO YOU💎</div>
     <div class="splash-subtitle">wanna see something crazy?</div>
     <div class="splash-instruction">Tap to SEE 😎→</div>
@@ -690,7 +693,7 @@
     © AHNAF TAHMID LOHIT</p>
     </a>
       
-      <button onclick="goToPage(2)">Next Page →</button>
+      <button onclick="playEventSound(SOUND_PAGE1_NEXT); goToPage(2)">Next Page →</button>
       <p class="page-indicator">Page 1 of 3</p>
     </div>
 
@@ -706,7 +709,7 @@
       
       <div class="button-row">
         <button onclick="goToPage(1)">← Back</button>
-        <button onclick="goToPage(3)">Next →</button>
+        <button onclick="playEventSound(SOUND_PAGE2_NEXT); goToPage(3)">Next →</button>
       </div>
       
       <p class="page-indicator">Page 2 of 3</p>
@@ -762,16 +765,88 @@
   //
   // Add as many URLs as you want - one will be randomly selected
   // when someone taps to enter!
+  //
+  // FIX: the three URLs that were here before were broken -
+  // "/instant/..." links are the sound's WEBPAGE, not the audio
+  // file, so appending .mp3 to them doesn't work (they 404).
+  // Real Myinstants audio files always live at
+  // "myinstants.com/media/sounds/SLUG.mp3" - that's the link
+  // behind the page's actual "Download MP3" button. Replaced
+  // below with three verified-working ones in that format.
   // ========================================================
 
   const TAP_TO_ENTER_SOUND_URLS = [
-    "https://www.myinstants.com/media/sounds/applause.mp3",
-    "https://www.myinstants.com/instant/oh-my-god-wow-47646.mp3",
-    "https://www.myinstants.com/instant/aahhkk-ahhk-with-echo-71613.mp3"
-    // Add more sound URLs here:
+    "https://www.myinstants.com/media/sounds/vine-boom-sound-effect_duzp4Of.mp3",
+    "https://www.myinstants.com/media/sounds/applause-sound-effect.mp3",
+    "https://www.myinstants.com/media/sounds/ta-da_yrvBrlS.mp3",
+    "https://www.myinstants.com/media/sounds/bone-crack.mp3",
+    "https://www.myinstants.com/media/sounds/perfect-fart.mp3",
+    "https://www.myinstants.com/media/sounds/yooooooooooooooooooooooooo_4.mp3",
+    "https://www.myinstants.com/media/sounds/aayein-meme.mp3",
+    "https://www.myinstants.com/media/sounds/y2mate_HOnnyD0.mp3",
+    "https://www.myinstants.com/media/sounds/fbi-open-up-sfx.mp3",
+    "https://www.myinstants.com/media/sounds/ei-tomra-kemon-aso-helicopter-milon.mp3"
+
+
+
+
+
+
+    // Add more sound URLs here, same format:
     // ,"https://www.myinstants.com/media/sounds/your-sound.mp3"
-    // ,"https://example.com/sound.mp3"
   ];
+
+  // ========================================================
+  // EVENT-SPECIFIC SOUNDS — one exact sound per action, NOT
+  // randomized (unlike the entrance sound above, which picks
+  // randomly from TAP_TO_ENTER_SOUND_URLS every time someone
+  // taps the splash screen).
+  // ========================================================
+  const SOUND_PAGE1_NEXT = "https://www.myinstants.com/media/sounds/mac-quack.mp3";              // Page 1 "Next Page →"
+  const SOUND_PAGE2_NEXT = "https://www.myinstants.com/media/sounds/meme-de-creditos-finales.mp3"; // Page 2 "Next →" (into the last page)
+    const SOUND_SCRATCH_REVEAL_URLS = [
+    "https://www.myinstants.com/media/sounds/anime-wow-sound-effect-mp3cut.mp3",
+    "https://www.myinstants.com/media/sounds/indian-song.mp3",
+    "https://www.myinstants.com/media/sounds/indian-sorry.mp3",
+    "https://www.myinstants.com/media/sounds/tudun-tadau_BJviW12.mp3",
+    "https://www.myinstants.com/media/sounds/rag-korla.mp3",
+    "https://www.myinstants.com/media/sounds/hamma-hamma-mamta-barerjee.mp3",
+    "https://www.myinstants.com/media/sounds/why-are.mp3",
+    "https://www.myinstants.com/media/sounds/bulla.mp3",
+    "https://www.myinstants.com/media/sounds/my-name-is-shamol.mp3",
+    "https://www.myinstants.com/media/sounds/shamol-love-story.mp3",
+    "https://www.myinstants.com/media/sounds/ei-bosun-toh.mp3",
+    "https://www.myinstants.com/media/sounds/eku-huzur.mp3",
+    "https://www.myinstants.com/media/sounds/notun-notun_6ecDO1g.mp3",
+    "https://www.myinstants.com/media/sounds/maaf-koira-dilam.mp3",
+    "https://www.myinstants.com/media/sounds/bhalo-hoye-jao-masud_IxDoHUT.mp3",
+    "https://www.myinstants.com/media/sounds/tomar-kache-bichar-dilam_lhW5Xfl.mp3",
+    "https://www.myinstants.com/media/sounds/ami-bishwas-kori-na.mp3",
+    "https://www.myinstants.com/media/sounds/10-ta-20-ta_fjmbDOT.mp3",
+    "https://www.myinstants.com/media/sounds/hatima-tim-tim.mp3",
+    "https://www.myinstants.com/media/sounds/hatima-tim-tim.mp3",
+    "https://www.myinstants.com/media/sounds/bengali-meme.mp3",
+    "https://www.myinstants.com/media/sounds/spiderman-meme-song.mp3",
+    "https://www.myinstants.com/media/sounds/oh-my-god-meme.mp3",
+    "https://www.myinstants.com/media/sounds/kuchu-puchu-tum-kaha-ho.mp3",
+    "https://www.myinstants.com/media/sounds/helicopter-helicopter-parakofer-parakofer.mp3"
+
+
+
+  ];
+
+  function playEventSound(url) {
+    try {
+      const audio = new Audio(url);
+      audio.volume = 0.8;
+      const p = audio.play();
+      if (p !== undefined) {
+        p.catch(err => console.warn("Event sound blocked:", err));
+      }
+    } catch (err) {
+      console.warn("Could not play event sound:", err);
+    }
+  }
 
   // ========================================================
   // MOBILE/ANDROID OPTIMIZED TAP TO ENTER SYSTEM
@@ -803,10 +878,15 @@
       const audio = new Audio(soundUrl);
       audio.volume = 0.8;
       audio.preload = 'auto';
-      
-      // Some Android browsers need this
-      audio.crossOrigin = 'anonymous';
-      
+
+      // FIX: removed "audio.crossOrigin = 'anonymous'" - that
+      // line forces the browser into strict CORS mode, and since
+      // myinstants.com doesn't send CORS headers for its audio
+      // files, the browser was silently refusing to load them at
+      // all. Normal playback (what we're doing here) never needed
+      // this in the first place - it's only required for
+      // Web Audio API / canvas access, which this code doesn't use.
+
       // Try to play, catch any errors
       const playPromise = audio.play();
       
@@ -951,10 +1031,9 @@ const MEME_GIF_1 = "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExcG4xNDBkcj
   // Random 1-2 word congrats shown each time someone finishes
   // scratching. Add, remove, or edit any of these freely.
   const CONGRATS_WORDS = [
-    "আপনি পাস!", "তুমি ফেইল", "এ আমি বিশ্বাস করি না!", "মুরব্বি মুরব্বি উহহু!", "আহারে...!", "বার বার শূধু আমার উপরেই!",
-    "এ কেমন বিচার!", "ট্যাকা নাই!", "সঠিক বলেছেন!", "চাচা আপনে!", "এ জীবন রেখে কি লাভ!!",
-    "আমার সরম করে!", "পড়া মাথায় ঢুকে না!", "টূরু লাব!", "ঘূমাতে পারি না সারারাত ধরে!", "জে আচ্ছা!",
-    "সাদা সাদা কালা কালা!!", "এইটা আমরা জানতাম!", "Tung Dung Tenaw!", "কি মানুষ বাবা ছি!", "তোমার বুকে কি কষ্ট?", "আরে এরা কারা! ", " আপনি এত্ত সুন্দর ওয়াও!", "Paisa hi Paisa Hoga", "Ayein, Beigan!"
+   "Skill Issue", "Sike! ", "Sorry, Not Sorry", "Womp Womp 📉", "Don't Try Again", "404: Prize Not Found", "Bruh 💀","Awkward...", "No Rizz No Prize", "Task Failed Successfully", "Error 404: Luck Not Found",
+   "Loading... Nope", "Zero Aura Gained", "DIBO NA TAKA JAO 💀", "EH SOKH KOTO", "Unemployed Luck", "Broke Energy", "Aura Lost 📉", "Zero Aura", "No Luck Detected", "Try Again Later",   "Prize.exe Failed",  "Continue? 0 Credits",
+  "Luck.exe Crashed", "System Says Nope", "Error: Bro Lost", "Connection Lost", "Prize Disconnected", "Maybe Next Century", "Not Even Close", "You Dodged the Prize", "Not My Problem",  "Quest Failed", "Server Rejected You", "Timeout 💀", "You Got Scammed 💀", "Achievement Unlocked: Nothing",
   ];
 
   function getRandomCongrats() {
@@ -1022,7 +1101,7 @@ const MEME_GIF_1 = "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExcG4xNDBkcj
     "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3YXkyOWlucnJxdHkwaXVoOWYxemZyNjJpcGZ2YWdzbXByMDI5bDhkdSZlcD12MV9naWZzX3JlbGF0ZWQmY3Q9Zw/YrD1PQldGsstG/giphy.gif",
     "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExaTJnOXJmM2QwcDE0c3hpamJlY2RmcWwyNmJiYTlhbmhvOGxvYTB3ZyZlcD12MV9naWZzX3JlbGF0ZWQmY3Q9Zw/vBTxCPUwfC6ddBsTbs/giphy.gif",
     "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExY3RjcHV0cjBiMW1iYzB1bzV0cjI5NnJ1eDF3ZGQ2b2p2MG5wajU2MyZlcD12MV9naWZzX3JlbGF0ZWQmY3Q9Zw/relnvfSEa2Qa125uPA/giphy.gif",
-    "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExcHdqNXIxMHl1cmZodGx3anI0Z3gxandhangyM2tocWR5NGs3aW90NSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/z6MZtVEe87t28/giphy.gif",
+    "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExcHdqNXIxMHl1cmZodGx3anI0Z3gxandhangyM2tocWR5NGs3aW90NSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/z6MZtVEe87t28/giphy.gif"
     
 
     // Add more lines here, e.g.:
@@ -1332,10 +1411,22 @@ async function getNextScratchGif() {
   }
 
   function showCongratsMessage() {
+
+    const randomIndex = Math.floor(
+      Math.random() * SOUND_SCRATCH_REVEAL_URLS.length
+    );
+
+    const randomSound =
+      SOUND_SCRATCH_REVEAL_URLS[randomIndex];
+
+    playEventSound(randomSound);
+
     const message = document.createElement('div');
     message.className = 'congrats-message';
     message.textContent = getRandomCongrats();
-    document.querySelector('.scratch-container').appendChild(message); // was: document.body.appendChild(message)
+
+    document.querySelector('.scratch-container').appendChild(message);
+
     setTimeout(() => message.remove(), CONGRATS_DURATION);
   }
 
