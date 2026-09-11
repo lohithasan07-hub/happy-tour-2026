@@ -866,41 +866,76 @@
   }
 
   // Play the sound on tap (Mobile-optimized)
+  // FIX: previously this set soundPlayedForSplash = true *before*
+  // knowing whether audio.play() actually succeeded, so a single
+  // failed attempt (bad URL, blocked, etc.) permanently locked out
+  // any retry. Now the flag is only set once a sound actually
+  // starts playing, and if a URL fails we fall back to another
+  // one from the list instead of giving up.
   function playTapSound() {
-    // Only play once
+    // Only play once per splash screen
     if (soundPlayedForSplash) return;
-    soundPlayedForSplash = true;
 
-    const soundUrl = getRandomSoundUrl();
-    if (!soundUrl) return;
+    if (TAP_TO_ENTER_SOUND_URLS.length === 0) {
+      console.warn("No sound URLs configured");
+      return;
+    }
 
-    try {
-      const audio = new Audio(soundUrl);
-      audio.volume = 0.8;
-      audio.preload = 'auto';
+    // Shuffle a copy of the list so we try URLs in random order,
+    // and can fall through to the next one if one fails.
+    const shuffled = [...TAP_TO_ENTER_SOUND_URLS].sort(() => Math.random() - 0.5);
+    tryPlayFromList(shuffled, 0);
+  }
 
-      // FIX: removed "audio.crossOrigin = 'anonymous'" - that
-      // line forces the browser into strict CORS mode, and since
-      // myinstants.com doesn't send CORS headers for its audio
-      // files, the browser was silently refusing to load them at
-      // all. Normal playback (what we're doing here) never needed
-      // this in the first place - it's only required for
-      // Web Audio API / canvas access, which this code doesn't use.
+  function tryPlayFromList(urls, index) {
+    if (soundPlayedForSplash) return; // a previous attempt already succeeded
+    if (index >= urls.length) {
+      console.warn("All tap sounds failed to play");
+      return;
+    }
 
-      // Try to play, catch any errors
-      const playPromise = audio.play();
-      
-      if (playPromise !== undefined) {
-        playPromise
-          .then(() => {
-            console.log('Sound played successfully');
-          })
-          .catch(error => {
-            console.warn("Audio autoplay blocked (common on mobile). User may need to tap again:", error);
-          });
-      }
-    } catch (error) {
-      console.warn("Could not play sound:", error);
+    const soundUrl = urls[index];
+    const audio = new Audio();
+    let settled = false;
+
+    const advance = (reason) => {
+      if (settled) return;
+      settled = true;
+      console.warn("Tap sound failed, trying next:", soundUrl, reason);
+      tryPlayFromList(urls, index + 1);
+    };
+
+    audio.src = soundUrl;
+    audio.volume = 0.8;
+    audio.preload = 'auto';
+
+    // Keep a reference so the Audio object isn't garbage-collected
+    // mid-playback (can silently cut off sound on some Android builds).
+    window.tapAudio = audio;
+
+    // FIX: removed "audio.crossOrigin = 'anonymous'" - that line
+    // forces the browser into strict CORS mode, and since
+    // myinstants.com doesn't send CORS headers for its audio
+    // files, the browser was silently refusing to load them at
+    // all. Normal playback (what we're doing here) never needed
+    // this - it's only required for Web Audio API / canvas access,
+    // which this code doesn't use.
+
+    audio.addEventListener('error', () => advance('media error'), { once: true });
+
+    const playPromise = audio.play();
+    if (playPromise !== undefined) {
+      playPromise
+        .then(() => {
+          settled = true;
+          soundPlayedForSplash = true;
+          console.log('Tap sound playing:', soundUrl);
+        })
+        .catch(error => advance(error));
+    } else {
+      // Older browsers that don't return a promise from play().
+      settled = true;
+      soundPlayedForSplash = true;
     }
   }
 
@@ -945,21 +980,23 @@
       return;
     }
 
-    // Mouse/Desktop Support
-    splashScreen.addEventListener('click', handleSplashTap, { once: false });
-    
+    // FIX: this used to also listen for 'pointerdown', which fires
+    // *before* touchstart/click on Android and was racing with them
+    // to call handleSplashTap() - since handleSplashTap() calls
+    // preventDefault/stopPropagation and starts audio playback,
+    // having three separate listeners compete for the same tap was
+    // the main source of flaky tap sounds. touchstart (mobile) +
+    // click (desktop) is enough on its own.
+
     // Touch Support (Mobile/Android)
-    splashScreen.addEventListener('touchstart', handleSplashTap, { 
-      once: false, 
+    splashScreen.addEventListener('touchstart', handleSplashTap, {
+      once: false,
       passive: false // Allow preventDefault
     });
-    
-    // Pointer Support (Modern devices)
-    splashScreen.addEventListener('pointerdown', handleSplashTap, { 
-      once: false, 
-      passive: false 
-    });
-    
+
+    // Mouse/Desktop Support
+    splashScreen.addEventListener('click', handleSplashTap, { once: false });
+
     // Keyboard Support (for accessibility)
     document.addEventListener('keydown', (e) => {
       if (splashTapped) return;
