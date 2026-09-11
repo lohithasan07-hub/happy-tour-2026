@@ -618,31 +618,48 @@
       padding: 10px 16px;
     }
 
-    .ts-message {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
+.congrats-message {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 
-      width: 85%;
-      height: 150px;
+  width: 85%;
+  height: 150px;
 
-      display: flex;
-      align-items: center;
-      justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-      background: linear-gradient(135deg, #52a7a2 0%, #2f258b 100%);
-      color: white;
-      padding: 1rem 1.5rem;
-      border-radius: 40px;
-      font-size: 22px;
-      z-index: 10;
-      text-align: center;
+  background: linear-gradient(135deg, #52a7a2 0%, #2f258b 100%);
+  color: white;
+  padding: 1rem 1.5rem;
+  border-radius: 40px;
+  font-size: 22px;
+  z-index: 10;
+  text-align: center;
 
-      animation: tsAnimation 3.5s ease-in-out;
-      pointer-events: none;
-    }
+  animation: congratsAnimation 3.5s ease-in-out;
+  pointer-events: none;
+}
 
+
+@keyframes congratsAnimation {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5);
+  }
+
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
 
     @keyframes tsAnimation {
       0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
